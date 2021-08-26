@@ -1,0 +1,326 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+{% block title %}
+  Сравнение товаров
+{% endblock title %}
+{% block content %}
+
+  <!-- base -->
+
+  <div class="way">
+    <div class="container">
+      <a href="{% url 'home' %}" >Главная</a>
+      >
+      <a href='#' class='active'>Сравнение</a>
+    </div>
+  </div>
+
+  <section class="section comparing">
+    <div class="container">
+      <h2 class="pageHeader">Сравнение товаров</h2>
+
+
+
+      
+
+      <div style='margin-top: 45px;' class="comparingItems d-flex">
+        <div class="mobileLabel mobileLabel_chars d-lg-none">
+          Характеристики
+        </div>
+        <div class="mobileLabel mobileLabel_height mobileLabel_grey d-lg-none">
+          Высота матраса (см)
+        </div>
+        <div class="mobileLabel mobileLabel_dencity mobileLabel_grey d-lg-none">
+          Жесткость
+        </div>
+        <div class="mobileLabel mobileLabel_type mobileLabel_grey d-lg-none">
+          Тип матраса
+        </div>
+        <div class="mobileLabel mobileLabel_power mobileLabel_grey d-lg-none">
+          Макс нагрузка на матрас
+        </div>
+        <div class="mobileLabel mobileLabel_mini mobileLabel_grey d-lg-none">
+          Возможность скрутить
+        </div>
+        <div class="mobileLabel mobileLabel_hypoallergic mobileLabel_grey d-lg-none">
+          Гипоаллергенный
+        </div>
+        <div class="info col d-sm-none">
+          <img class='logo' src="{% static 'img/logo2.svg' %}" alt="">
+
+          <div class='title'>
+            <p>Характеристики</p>
+          </div>
+          <ul class="chars">
+            <li>
+              Высота матраса (см)
+            </li>
+            <li>
+              Жесткость матраса
+            </li>
+            <li>Тип матраса</li>
+            <li>Макс. нагрузка на одно спальное место</li>
+            <li>Возможность скрутить</li>
+            <li>Гипоаллергенный</li>
+          </ul>
+        </div>
+
+        <div class="col">
+          <img src=" {{ product_comparison.image_for_cart.url }}" alt="" class="itemPic">
+          <div class="name">
+            <p> {{ product_comparison }} </p>
+            <span> {{ product_comparison.price }} руб.</span>
+          </div>
+          <ul class="chars">
+            <li>
+              {{ product_comparison.height }}
+            </li>
+            <li>
+              {{ product_comparison.rigidity }}
+            </li>
+            <li> {{ product_comparison.mattress_type }} </li>
+            <li> {{ product_comparison.maximum_load_on_one_berth }} </li>
+            {% if product_comparison.ability_to_twist == True %}
+             <li> <img class='checked' src="{% static 'img/check 2.svg' %}" alt=""> </li>
+            {% else %}
+             <li> <img class='checked' src="{% static 'img/minus.svg' %}" alt=""> </li>
+            {% endif %}
+            {% if product_comparison.hypoallergenic == True %}
+             <li> <img class='not' src="{% static 'img/check 2.svg' %}" alt=""> </li>
+            {% else %}
+             <li> <img class='not' src="{% static 'img/minus.svg' %}" alt=""> </li>
+            {% endif %}
+          </ul>
+          <form class='buy_on_click' action="{% url 'add_to_cart' ct_model=product_comparison.category slug=product_comparison.id %}" method="POST">
+            {% csrf_token %}
+          <button class="one-click-button" type="submit">
+            Купить
+          </button>
+          </form>
+        </div>
+        {% for product in products %}
+        <div class="col">
+          
+          <img src="{{ product.image_for_cart.url }}" alt="" class="itemPic">
+          <div class="name">
+            <p> {{ product }}</p>
+            <span> {{ product.price }} руб.</span>
+          </div>
+          <ul class="chars">
+            <li>
+              {{ product.height }}
+            </li>
+            <li>
+              {{ product.rigidity }}
+            </li>
+            <li>{{ product.mattress_type }}</li>
+            <li>{{ product.maximum_load_on_one_berth }}</li>
+            {% if product.ability_to_twist == True %}
+             <li> <img class='checked' src="{% static 'img/check 2.svg' %}" alt=""> </li>
+            {% else %}
+             <li> <img class='checked' src="{% static 'img/minus.svg' %}" alt=""> </li>
+            {% endif %}
+            {% if product.hypoallergenic == True %}
+             <li> <img class='not' src="{% static 'img/check 2.svg' %}" alt=""> </li>
+            {% else %}
+             <li> <img class='not' src="{% static 'img/minus.svg' %}" alt=""> </li>
+            {% endif %}
+          </ul>
+
+          <form class='buy_on_click' action="{% url 'add_to_cart' ct_model=product.category slug=product.id %}" method="POST">
+            {% csrf_token %}
+          <button class="one-click-button" type="submit">
+            Купить
+          </button>
+          </form>
+        </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class='section feedbacks'>
+
+    <div class="feedbacks__bg"></div>
+
+    <div class="container">
+      <h4>Отзывы</h4>
+
+      <div class="swiper-container6">
+        <div class="custom-arrow3">
+          <img class='prev' src="{% static 'img/arrowPrev3.svg' %}" alt="">
+          <img class='next' src="{% static 'img/arrowNext3.svg' %}" alt="">
+        </div>
+        <div class="swiper-wrapper">
+          <div class="feedback swiper-slide">
+            <div class="author d-flex">
+            <div class="pic">
+              <img src="{% static 'img/unknown.png' %}" alt="">
+            </div>
+            <div class="info">
+            <p class="name">Мария Иванова</p>
+            <span>Матрас "Extra Strong"</span>
+            <div class="mark">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+
+
+              / 
+
+              4,9 из 5
+            </div>
+          </div>
+          <a href='#' class="link"><img src="{% static 'img/instaIcon.svg' %}" alt=""></a>
+        </div>
+        <img class='line' src="{% static 'img/goldenWhiteDottenLine.svg' %}" alt="">
+        <div class="content">
+          <p>
+            Боялся, но пересилил себя. Сначала пугали и цены, и отзывы, и сам сайт чем-то пугал, но всё же решил рискнуть, и проверить всё это дело на подлинность. Но на моё удивление, и заказ приняли быстро, и телефон привезли нормальный, не битый, не пересобранный, и даже оригинальный. Возможно, я попал в 10 тку и мне повезло, но думаю, что все люди из отзывов так же удивились увиденному. Могу сказать столько спасибо. Спасибо.
+          </p>
+        </div>
+          </div>
+
+          <div class="feedback swiper-slide">
+            <div class="author d-flex">
+            <div class="pic">
+              <img src="{% static 'img/unknown.png' %}" alt="">
+            </div>
+            <div class="info">
+            <p class="name">Петр Свиридов</p>
+            <span>Матрас "Extra Strong"</span>
+            <div class="mark">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+
+              / 
+
+              4,9 из 5
+            </div>
+          </div>
+          <a href='#' class="link"><img src="{% static 'img/instaIcon.svg' %}" alt=""></a>
+        </div>
+        <img class='line' src="{% static 'img/goldenWhiteDottenLine.svg' %}" alt="">
+        <div class="content">
+          <p>
+            Но на моё удивление, и заказ приняли быстро, и телефон привезли нормальный, не битый, не пересобранный, и даже оригинальный. Возможно, я попал в 10тку и мне повезло, но думаю, что все люди из отзывов так же удивились увиденному. Могу сказать столько спасибо. Спасибо.
+          </p>
+        </div>
+          </div>
+
+          <div class="feedback swiper-slide">
+            <div class="author d-flex">
+            <div class="pic">
+              <img src="{% static 'img/unknown.png' %}" alt="">
+            </div>
+            <div class="info">
+            <p class="name">Светлана Петрова</p>
+            <span>Матрас "Extra Strong"</span>
+            <div class="mark">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+
+              / 
+
+              4,9 из 5
+            </div>
+          </div>
+          <a href='#' class="link"><img src="{% static 'img/instaIcon.svg' %}" alt=""></a>
+        </div>
+        <img class='line' src="{% static 'img/goldenWhiteDottenLine.svg' %}" alt="">
+        <div class="content">
+          <p>
+            Боялся, но пересилил себя. Сначала пугали и цены, и отзывы, и сам сайт чем-то пугал, но всё же решил рискнуть, и проверить всё это дело на подлинность. Но на моё удивление, и заказ приняли быстро, и телефон привезли нормальный, не битый, не пересобранный, и даже оригинальный. Возможно, я попал в 10тку и мне повезло, но думаю, что все люди из отзывов так же удивились увиденному. Могу сказать столько спасибо. Спасибо.
+          </p>
+        </div>
+          </div>
+
+          <div class="feedback swiper-slide">
+            <div class="author d-flex">
+            <div class="pic">
+              <img src="{% static 'img/unknown.png' %}" alt="">
+            </div>
+            <div class="info">
+            <p class="name">Мария Иванова</p>
+            <span>Матрас "Extra Strong"</span>
+            <div class="mark">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+
+              / 
+
+              4,9 из 5
+            </div>
+          </div>
+          <a href='#' class="link"><img src="{% static 'img/instaIcon.svg' %}" alt=""></a>
+        </div>
+        <img class='line' src="{% static 'img/goldenWhiteDottenLine.svg' %}" alt="">
+        <div class="content">
+          <p>
+            Боялся, но пересилил себя. Сначала пугали и цены, и отзывы, и сам сайт чем-то пугал, но всё же решил рискнуть, и проверить всё это дело на подлинность. Но на моё удивление, и заказ приняли быстро, и телефон привезли нормальный, не битый, не пересобранный, и даже оригинальный. Возможно, я попал в 10 тку и мне повезло, но думаю, что все люди из отзывов так же удивились увиденному. Могу сказать столько спасибо. Спасибо.
+          </p>
+        </div>
+          </div>
+
+          <div class="feedback swiper-slide">
+            <div class="author d-flex">
+            <div class="pic">
+              <img src="{% static 'img/unknown.png' %}" alt="">
+            </div>
+            <div class="info">
+            <p class="name">Мария Иванова</p>
+            <span>Матрас "Extra Strong"</span>
+            <div class="mark">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+              <img src="{% static 'img/filledStar.svg' %}" alt="">
+
+              / 
+
+              4,9 из 5
+            </div>
+          </div>
+          <a href='#' class="link"><img src="{% static 'img/instaIcon.svg' %}" alt=""></a>
+        </div>
+        <img class='line' src="{% static 'img/goldenWhiteDottenLine.svg' %}" alt="">
+        <div class="content">
+          <p>
+            Боялся, но пересилил себя. Сначала пугали и цены, и отзывы, и сам сайт чем-то пугал, но всё же решил рискнуть, и проверить всё это дело на подлинность. Но на моё удивление, и заказ приняли быстро, и телефон привезли нормальный, не битый, не пересобранный, и даже оригинальный. Возможно, я попал в 10 тку и мне повезло, но думаю, что все люди из отзывов так же удивились увиденному. Могу сказать столько спасибо. Спасибо.
+          </p>
+        </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="one-click-button">
+        Показать все
+      </button>
+
+
+    </div>
+  </section>
+
+
+  <!-- base -->
+
+  <script src="{% static 'js/scripts/slider-swiper.js' %}"></script>
+  <script src="{% static 'js/scripts/select.js' %}"></script>
+  <script src="{% static 'js/scripts/main.js' %}"></script>
+  <!-- <script src='../js/scripts/runner.js'></script> -->
+
+{% endblock content %}

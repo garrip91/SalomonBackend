@@ -1,0 +1,301 @@
+{% extends 'main/base.html' %}
+
+{% load static %}
+{% block title %}
+  Корзина
+{% endblock title %}
+{% block content %}
+
+  <!-- base -->
+
+  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <div class="way">
+    <div class="container">
+      <a href="{% url 'home' %}" >Главная</a>
+      >
+      <a href='#' class='active'>Корзина</a>
+    </div>
+  </div>
+
+
+
+  <section class="basket section">
+    <div class="container">
+      <h2 class="pageHeader">Ваша корзина {% if not cart.products.count %}пуста{% endif %} </h2>
+        
+      <div class="basket__base">
+        <div class="items">
+          {% for item in cart.products.all %}
+          <div class="basketItem">
+            <img src="{{ item.content_object.image_for_cart.url }}" alt="">
+            <div class="title">
+              <span>
+                  {{ item.content_object.category }}
+              </span>
+              <p>
+                {{ item.content_object.title }}
+              </p>
+            </div>
+
+            <div class="counter counter_gold">
+              <span class="minus">
+                -
+              </span>
+              <span class="number">
+                1
+              </span>
+              <span class="plus">
+                +
+              </span>
+              <!-- HIDDEN COUNTER INPUT  -->
+              <input hidden name='goodCount' class='hiddenInputCount' type="text">
+              <!-- HIDDEN COUNTER INPUT -->
+            </div>
+
+            <div class="price">
+              <span>{{ item.final_price }}</span> руб
+            </div>
+            <div class='form_wrapper'>
+            <form class='removingForm'  
+            method='POST' 
+            action="{% url 'remove_from_cart' ct_model=item.content_object.category slug=item.content_object.id %}">
+              {% csrf_token %}
+              <button class='removingButton' type='submit' ></button>
+            </form>
+            </div>
+          </div>
+          {% endfor %}
+          </div>
+          <!-- <div class="overall">
+            <div class="price">
+  
+              <p class="current">
+                {{ cart.final_price }} руб.
+              </p>
+              <p class="old">
+                {{ cart.old_price }} руб.
+              </p>
+              <div class="discount">
+                -{{ cart.sale }} руб.
+              </div>
+  
+            </div>
+            <button class="red-button">
+              Оформить заказ
+            </button>
+            <div class="why">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 0C3.58892 0 0 3.58868 0 8C0 12.4113 3.58892 16 8 16C12.4111 16 16 12.4113 16 8C16 3.58868 12.4111 0 8 0ZM8 15.0154C4.13169 15.0154 0.984615 11.8683 0.984615 8C0.984615 4.13169 4.13169 0.984615 8 0.984615C11.8683 0.984615 15.0154 4.13169 15.0154 8C15.0154 11.8683 11.8683 15.0154 8 15.0154Z" fill="#F7F3E4"/>
+                <path d="M8.12807 5.63348C8.58282 5.63348 8.95146 5.26484 8.95146 4.81009C8.95146 4.35535 8.58282 3.98671 8.12807 3.98671C7.67333 3.98671 7.30469 4.35535 7.30469 4.81009C7.30469 5.26484 7.67333 5.63348 8.12807 5.63348Z" fill="#F7F3E4"/>
+                <path d="M7.91028 6.9765C7.63852 6.9765 7.41797 7.19706 7.41797 7.46881V11.6534C7.41797 11.9252 7.63852 12.1457 7.91028 12.1457C8.18203 12.1457 8.40258 11.9252 8.40258 11.6534V7.46881C8.40258 7.19681 8.18203 6.9765 7.91028 6.9765Z" fill="#F7F3E4"/>
+                </svg>
+  
+              <p>Почему низкая цена?</p>
+  
+            </div>
+          </div> -->
+        </div>
+        
+
+
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section checkout">
+    <div class="container">
+      <h3 class="title">Оформление заказа</h3>
+      <form action="" method="POST">
+        {% csrf_token %}
+        <input type="text" class="input" placeholder="Ваше имя" name="name">
+        <input type="text" class="input" placeholder="Номер телефона" name="phone">
+        <input type="text" class="input" placeholder="Email" name="email">
+        <input type="text" class="input" placeholder="Комментарий" name="comment">
+
+        <div class="annotation">
+          <span class='red'>*</span>
+          <span>- Обязательные для заполнения поля отмечены звездочкой</span>
+        </div>
+
+        <div class="final">
+          <div class="confirm">
+            <input type="checkbox" name="" id="checkout">
+            <p>Я прочитал и соглашаюсь с правилами: <a href="#">Политика безопасности</a></p>
+          </div>
+
+          <div class="finalPrice">
+            <span>Итого к оплате: </span>
+            <p>
+              <span id='finalPrice'>{{ cart.final_price }}</span>
+               руб.
+            </p>
+          </div>
+
+          <button class="red-button" type="submit">
+            Оформить заказ
+          </button>
+
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+    <script>
+      let checkOut = document.querySelector('#checkout')
+      let btn = document.querySelector('.red-button')
+
+      btn.disabled = true
+
+      checkOut.onclick = () => {
+        if (checkOut.checked){
+          btn.disabled = false
+        } else {
+          btn.disabled = true
+        }
+      }
+    </script>
+    
+
+  <script>
+
+    let removingButtons = document.querySelectorAll('.basketItem .removingButton')
+    let Items = document.querySelectorAll('.basketItem')
+    let removingForms = document.querySelectorAll('.basketItem .removingForm')
+    let conunters = document.querySelectorAll('.counter')
+
+    conunters.forEach((counter) => {
+      counter.onclick = () => {
+        if (event.target.className == 'plus') {
+
+          event.target.parentNode.querySelector('.number').innerHTML  =  ~~event.target.parentNode.querySelector('.number').innerHTML + 1 
+          event.target.parentNode.querySelector('.hiddenInputCount').value = event.target.parentNode.querySelector('.number').innerHTML
+          console.log(event.target.parentNode.querySelector('.hiddenInputCount').value)
+        } 
+        if (event.target.className == 'minus') {
+          if (~~event.target.parentNode.querySelector('.number').innerHTML > 1){
+            event.target.parentNode.querySelector('.number').innerHTML  =  ~~event.target.parentNode.querySelector('.number').innerHTML - 1 
+            event.target.parentNode.querySelector('.hiddenInputCount').value = event.target.parentNode.querySelector('.number').innerHTML
+            console.log(event.target.parentNode.querySelector('.hiddenInputCount').value)
+          }
+        }
+      }
+    })
+
+    
+    let updateArr = (index, nodeList) => {
+      let arr = Array.from(nodeList)
+      arr.splice(index, 1)
+      return arr
+    }
+
+
+
+    $(function(){
+
+      
+
+      let rerenderGoods = (Arr) => {
+        let Items = document.querySelectorAll('.basketItem')
+        let wrapper = document.querySelector('.items')
+        wrapper.innerHTML = ''
+        for (let i = 0; i < Arr.length; i++){
+          let Item = document.createElement('div')
+          Item.className = 'basketItem'
+          let img = document.createElement('img')
+          let divTitle = document.createElement('div')
+          divTitle.className = 'title'
+          let spanCat = document.createElement('span')
+          let pTitle = document.createElement('p')
+          let divPrice = document.createElement('div')
+          divPrice.className = 'price'
+          let formWrapper = document.createElement('div')
+          formWrapper.className = 'form_wrapper'
+          
+  
+          
+          let picWay = Arr[i].children[0].getAttribute('src') //1
+  
+          img.src = picWay
+  
+          let title = Arr[i].children[1].children[1].innerHTML, //2
+          cat = Arr[i].children[1].children[0].innerHTML
+  
+          spanCat.innerHTML = cat
+          pTitle.innerHTML = title
+          divTitle.appendChild(spanCat)
+          divTitle.appendChild(pTitle)
+  
+          let price = Arr[i].children[2].innerHTML                        //3
+          divPrice.innerHTML = price
+  
+          //console.log(form)
+          let form = Arr[i].children[3].innerHTML
+          formWrapper.innerHTML = form
+  
+          Item.appendChild(img)
+          Item.appendChild(divTitle)
+          Item.appendChild(divPrice)
+          Item.appendChild(formWrapper)
+  
+  
+         // Item.innerHTML = Arr
+          wrapper.appendChild(Item)
+        }
+    
+      }
+
+        $('.removingForm').submit(function(event){
+          event.preventDefault();
+          var currentForm = $(this);
+          var posting = $.post(currentForm.attr('action'), currentForm.serialize());
+  
+          posting.done(function(data){
+            let indeX = currentForm.parent().parent().index()
+            console.log(indeX)
+            currentForm.parent().parent().parent().children().eq(indeX).remove()
+           // alert('Удалено')
+
+           let priceOfRemoved = ~~currentForm.parent().parent()[0].querySelector('.price span').innerHTML
+         //  console.log(~~currentForm.parent().parent()[0].querySelector('.price span').innerHTML)
+          // console.log($('#finalPrice')[0].innerHTML)
+            $('#basketCounter')[0].innerHTML = ~~$('#basketCounter')[0].innerHTML - 1
+            $('#finalPrice')[0].innerHTML = ~~$('#finalPrice')[0].innerHTML - priceOfRemoved
+          })
+          posting.fail(function(data){
+            console.log('нет')
+          })
+        })
+
+
+    })
+
+
+$(function() {
+    $("#add_count").submit(function(event) {
+        // Stop form from submitting normally
+        event.preventDefault();
+        var friendForm = $(this);
+        // Send the data using post
+        var posting = $.post( friendForm.attr('action'), friendForm.serialize() );
+        // if success:
+        posting.done(function(data) {
+            // success actions, maybe change submit button to 'friend added' or whatever
+        });
+        // if failure:
+        posting.fail(function(data) {
+            // 4xx or 5xx response, alert user about failure
+        });
+    });
+});
+  </script>
+
+  <script src='{% static "js/scripts/slider-swiper.js" %}'></script>
+  <script src='{% static "js/scripts/select.js" %}'></script>
+  <script src='{% static "js/scripts/main.js" %}'></script>
+  <!-- <script src='../js/scripts/runner.js'></script> -->
+
+
+{% endblock content %}
